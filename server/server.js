@@ -1,12 +1,12 @@
 const express = require('express');
-const path = require('path');
 const bodyParser = require('body-parser');
 const User = require('./models/user.model.js');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const passportLocalMongoose = require('passport-local-mongoose');
 const session = require('express-session');
-const http = require('http');
+const mongoose = require('mongoose');
+require('./config/database.config')(mongoose);
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -24,20 +24,23 @@ app.use(passport.session());
 var routes = require('./routes/routes');
 app.use('/',routes);
 
-app.use(function(req, res, next) {
+app.get('*', (req,res) => {
+    res.sendFile('/src/index.js',{root:'./client'});
+})
+
+app.use((req, res, next) => {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
-app.use(function(err, req, res) {
+app.use((err, req, res) => {
     res.send(JSON.stringify({
         message: err.message,
         error: {}
     }));
 });
 
-var server = http.createServer( app );
-app.set( 'server', server );
+app.listen(3000);
 
 module.exports = app;
