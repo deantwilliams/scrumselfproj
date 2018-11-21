@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var passportLocalMongoose = require('passport-local-mongoose');
-//var Project = require('./project.model.js');
+var Project = require('./project.model.js');
 
 var userSchema = mongoose.Schema({
     firstName: String,
@@ -10,7 +10,7 @@ var userSchema = mongoose.Schema({
     password: String,
     //image: String,
     role: String,
-    //currentProj: { type: mongoose.Schema.Types.ObjectId, ref: 'Project'}
+    currentProj: {type:mongoose.Schema.Types.ObjectId,ref:'Project'}
 });
 
 userSchema.plugin(passportLocalMongoose);
